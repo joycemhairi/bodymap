@@ -322,7 +322,7 @@
     <div class="panel">
       <h3>About this atlas</h3>
       <p class="about-text">
-        This atlas visualises a seed corpus of 13 foundational papers (1981–2019) documenting Fetal Valproate Spectrum Disorder (FVSD),
+        This atlas visualises a Research Library of 13 foundational papers (1981–2019) documenting Fetal Valproate Spectrum Disorder (FVSD),
         from the earliest teratogenicity reports through the 2019 consensus diagnostic statement.
         Explore research by body system, evidence type and year.
         <br><br><a href="#">Learn more about FVSD →</a>
@@ -347,7 +347,7 @@
 </div>
 
 <script>
-/* ---------------- DATA: FVSD literature seed corpus v0.1 (13 papers) ---------------- */
+/* ---------------- DATA: FVSD literature Reserch Library v0.1 (13 papers) ---------------- */
 const PAPERS = [
   {id:"FVSD-0001",year:1981,title:"Possible teratogenicity of valproic acid",authors:"Gomez MR",journal:"J Pediatr",pubType:"Letter",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report/letter",topic:"Congenital anomalies",notes:"Early precursor to fetal valproate embryopathy literature; cited by later phenotype papers.",link:"https://doi.org/10.1016/S0022-3476(81)80743-3",systems:["other"]},
   {id:"FVSD-0002",year:1983,title:"Valproic acid embryopathy?",authors:"Blaw ME; Woody RC",journal:"Neurology",pubType:"Letter; Case Report",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report/letter",topic:"Neural tube defect; Arnold-Chiari malformation; meningomyelocele",notes:"Early paper explicitly using embryopathy terminology.",link:"https://pubmed.ncbi.nlm.nih.gov/6401849/",systems:["skeletal","brain"]},
@@ -535,7 +535,7 @@ function renderDetail(){
       <div class="htitle">
         <div>
           <h2>${sys.icon}  ${sys.name}</h2>
-          <div class="count">${all.length} paper${all.length===1?'':'s'} in seed corpus</div>
+          <div class="count">${all.length} paper${all.length===1?'':'s'} in Research Library</div>
           <button class="summary-btn">📊 View summary</button>
         </div>
       </div>
