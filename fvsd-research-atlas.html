@@ -268,6 +268,56 @@
     font-size:11.5px;color:var(--muted);
     padding:14px 4px 30px;display:flex;gap:8px;align-items:center;
   }
+
+  /* ---------- Quality traffic light ---------- */
+  .quality{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:700;
+    padding:3px 9px 3px 7px;border-radius:20px;
+  }
+  .quality .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .quality.green{background:#e7f6ee;color:#1f8a4c;}
+  .quality.green .dot{background:#2fb765;}
+  .quality.yellow{background:#fdf5e2;color:#a66b06;}
+  .quality.yellow .dot{background:#f0ac26;}
+  .quality.red{background:#fbeaea;color:#c23b34;}
+  .quality.red .dot{background:#e3564c;}
+
+  /* ---------- Web articles section ---------- */
+  .articles-section{
+    grid-column:1/-1;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 4px;
+    margin-top:2px;
+  }
+  .articles-header{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    flex-wrap:wrap;gap:10px;margin-bottom:6px;
+  }
+  .articles-header h3{margin:0 0 4px;font-size:15px;}
+  .articles-header .subtle2{font-size:12px;color:var(--muted);max-width:520px;line-height:1.5;}
+  .quality-legend{
+    display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);
+    align-items:center;background:#f7f7fc;border-radius:9px;padding:8px 12px;
+  }
+  .articles-grid{
+    display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:12px;padding:14px 0 18px;
+  }
+  .article-card{
+    border:1px solid var(--line);border-radius:11px;padding:13px 14px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .article-card .atype{
+    font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--purple);
+  }
+  .article-card h4{margin:0;font-size:13.5px;line-height:1.35;color:var(--ink);}
+  .article-card .asource{font-size:11.5px;color:var(--muted);}
+  .article-card .asummary{font-size:12px;color:var(--ink-soft);line-height:1.45;flex:1;}
+  .article-card .afoot{display:flex;justify-content:space-between;align-items:center;margin-top:4px;}
+  .article-card .view-link{font-size:12px;font-weight:700;color:var(--purple);border:1px solid var(--purple-soft);padding:6px 10px;border-radius:8px;}
 </style>
 </head>
 <body>
@@ -296,6 +346,18 @@
   <button class="reset-btn" onclick="resetFilters()">↺ Reset filters</button>
 </div>
 
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="nav-item active"><span class="ico">🗺️</span> Body Map</div>
+    <div class="nav-item"><span class="ico">🔗</span> Research Landscape</div>
+    <div class="nav-item"><span class="ico">📅</span> Timeline</div>
+    <div class="nav-item"><span class="ico">⭐</span> Top Topics</div>
+    <div class="nav-item"><span class="ico">ⓘ</span> About FVSD</div>
+    <div class="nav-item"><span class="ico">📖</span> Glossary</div>
+    <div class="nav-item"><span class="ico">📄</span> Methodology</div>
+    <div class="nav-footnote">🗄️ Data updated<br>May 2025</div>
+  </nav>
 
   <!-- Body map -->
   <section class="bodymap-card">
@@ -316,12 +378,28 @@
   <!-- Detail panel -->
   <section class="detail-card" id="detailCard"></section>
 
+  <!-- Web articles & resources -->
+  <section class="articles-section">
+    <div class="articles-header">
+      <div>
+        <h3>Web Articles & Resources</h3>
+        <div class="subtle2">Patient guides, regulatory advisories and reference sources that supplement the peer-reviewed Research Library above — useful context, not a substitute for it.</div>
+      </div>
+      <div class="quality-legend">
+        <span><span class="quality green" style="padding:2px 7px;"><span class="dot"></span></span> Official / clinically reviewed</span>
+        <span><span class="quality yellow" style="padding:2px 7px;"><span class="dot"></span></span> Reputable news / advocacy</span>
+        <span><span class="quality red" style="padding:2px 7px;"><span class="dot"></span></span> Unreviewed / user-generated</span>
+      </div>
+    </div>
+    <div class="articles-grid" id="articlesGrid"></div>
+  </section>
+
   <div class="bottom-row">
     <div class="panel">
       <h3>About this atlas</h3>
       <p class="about-text">
-        This atlas visualises a Research Library of 13 foundational papers (1981–2019) documenting Fetal Valproate Spectrum Disorder (FVSD),
-        from the earliest teratogenicity reports through the 2019 consensus diagnostic statement.
+        This atlas visualises a Research Library of 26 papers (1980–2023) documenting Fetal Valproate Spectrum Disorder (FVSD),
+        from the earliest teratogenicity reports through modern consensus and mechanistic literature.
         Explore research by body system, evidence type and year.
         <br><br><a href="#">Learn more about FVSD →</a>
       </p>
@@ -345,15 +423,64 @@
 </div>
 
 <script>
-/* ---------------- DATA: FVSD literature Reserch Library v0.2 (26 papers) ---------------- */
-const [
-  {id:"FVSD-0001", ...},
-  ...
-  {id:"FVSD-0026", ...}
+/* ---------------- DATA: FVSD literature Research Library v0.2 (26 papers) ---------------- */
+const PAPERS = [
+  {id:"FVSD-0001",year:1980,title:"Congenital anomalies in children of epileptic mothers and fathers",authors:"Dieterich E; et al.",journal:"",pubType:"Research Article",tier:"Tier 4 - Broader prenatal valproate evidence",studyDesign:"Observational",topic:"Congenital anomalies",verification:"Needs verification",notes:"Early recognition of anticonvulsant-associated teratogenic risk; exact bibliographic metadata requires verification.",link:"https://doi.org/10.1055/s-2008-1071396",systems:["other"]},
+  {id:"FVSD-0002",year:1980,title:"Teratogenicity of valproic acid",authors:"Dalens B; Raynaud EJ",journal:"",pubType:"Research Article",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report/clinical report",topic:"Congenital anomalies",verification:"Needs verification",notes:"Early report linking valproic acid exposure to congenital malformations.",link:"https://doi.org/10.1016/S0022-3476(80)80517-8",systems:["other"]},
+  {id:"FVSD-0003",year:1981,title:"Possible teratogenicity of valproic acid",authors:"Gomez MR",journal:"Journal of Pediatrics",pubType:"Letter",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report/letter",topic:"Congenital anomalies",verification:"Verified",notes:"Early precursor to fetal valproate embryopathy literature.",link:"https://doi.org/10.1016/S0022-3476(81)80743-3",systems:["other"]},
+  {id:"FVSD-0004",year:1983,title:"Valproic acid embryopathy?",authors:"Blaw ME; Woody RC",journal:"Neurology",pubType:"Letter; Case Report",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report/letter",topic:"Neural tube defect; Arnold-Chiari malformation; meningomyelocele",verification:"Verified",notes:"Early paper explicitly using embryopathy terminology.",link:"https://pubmed.ncbi.nlm.nih.gov/6401849/",systems:["skeletal", "brain"]},
+  {id:"FVSD-0005",year:1984,title:"The fetal valproate syndrome",authors:"DiLiberti JH; Farndon PA; Dennis NR; Curry CJR",journal:"American Journal of Medical Genetics",pubType:"Research Article",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Clinical case series",topic:"Congenital anomalies; dysmorphism; developmental effects",verification:"Verified",notes:"Seminal formal description of fetal valproate syndrome.",link:"https://pubmed.ncbi.nlm.nih.gov/6439041/",systems:["craniofacial", "other"]},
+  {id:"FVSD-0006",year:1987,title:"Prognosis in fetal valproate syndrome",authors:"Massa G; Lecoutere D; Casaer P",journal:"Journal of Pediatrics",pubType:"Case Report",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Case report",topic:"Long-term outcome; behavior; growth",verification:"Verified",notes:"Directly concerns prognosis following fetal valproate syndrome.",link:"https://pubmed.ncbi.nlm.nih.gov/3112355/",systems:["brain"]},
+  {id:"FVSD-0007",year:1987,title:"Fetal valproate syndrome: is there a recognisable phenotype?",authors:"Winter RM; Donnai D; Crowley JM; et al.",journal:"Journal of Medical Genetics",pubType:"Research Article",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Case series",topic:"Dysmorphism; congenital anomalies; phenotype",verification:"Verified",notes:"Important early description of a recognizable fetal valproate phenotype.",link:"https://pubmed.ncbi.nlm.nih.gov/3123693/",systems:["craniofacial"]},
+  {id:"FVSD-0008",year:1988,title:"Verification of the fetal valproate syndrome phenotype",authors:"Ardinger HH; Atkin JF; Blackston RD; Elsas LJ; Clarren SK; Livingstone S; Flannery DB; Pellock JM; Harrod MJ; Lammer EJ",journal:"American Journal of Medical Genetics",pubType:"Research Article",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Phenotype verification/clinical series",topic:"Dysmorphism; congenital anomalies; phenotype",verification:"Verified",notes:"Key phenotype confirmation paper.",link:"https://doi.org/10.1002/ajmg.1320290123",systems:["craniofacial"]},
+  {id:"FVSD-0009",year:1988,title:"Congenital abnormalities in valproate-exposed siblings",authors:"D. et al.",journal:"",pubType:"Case Report",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Sibling case report",topic:"Congenital anomalies",verification:"Needs verification",notes:"Candidate record supplied by user; author/title metadata requires verification.",link:"https://doi.org/10.1002/ajmg.1320310214",systems:["other"]},
+  {id:"FVSD-0010",year:1991,title:"The fetal valproate syndrome",authors:"Palea KM",journal:"Scottish Medical Journal",pubType:"Case Report",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Case report",topic:"Fetal valproate syndrome",verification:"Verified",notes:"Direct syndrome terminology.",link:"https://pubmed.ncbi.nlm.nih.gov/1925511/",systems:["other"]},
+  {id:"FVSD-0011",year:1995,title:"Fetal valproate syndrome",authors:"Clayton-Smith J; Donnai D",journal:"Journal of Medical Genetics",pubType:"Research Article",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Clinical genetics case series/review",topic:"Phenotype; clinical genetics",verification:"Verified",notes:"Important clinical genetics synthesis with extensive historical references.",link:"https://pubmed.ncbi.nlm.nih.gov/8544193/",systems:["craniofacial"]},
+  {id:"FVSD-0012",year:2000,title:"A clinical study of 57 children with fetal anticonvulsant syndromes",authors:"Moore SJ; Turnpenny P; Quinn A; Glover S; Lloyd DJ; Montgomery T; Dean JCS",journal:"Journal of Medical Genetics",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Clinical cohort",topic:"Congenital anomalies; dysmorphism; neurodevelopment",verification:"Needs verification",notes:"Large clinical study of children with fetal anticonvulsant syndromes; important bridge from FVS to broader anticonvulsant exposure phenotypes.",link:"https://doi.org/10.1136/jmg.37.7.489",systems:["craniofacial", "brain", "other"]},
+  {id:"FVSD-0013",year:2001,title:"Fetal valproate syndrome and autism: additional evidence of an association",authors:"Williams G; King J; Cunningham M; Stephan M; Kerr B; Hersh JH",journal:"Developmental Medicine & Child Neurology",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Case series",topic:"Autism; cognitive impairment; FVS phenotype",verification:"Verified",notes:"Reports additional patients with FVS and autism.",link:"https://pubmed.ncbi.nlm.nih.gov/11263692/",systems:["brain"]},
+  {id:"FVSD-0014",year:2001,title:"Septo-optic dysplasia as a manifestation of valproic acid embryopathy",authors:"McMahon CL; Braddock SR",journal:"Teratology",pubType:"Case Report",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report",topic:"Septo-optic dysplasia; congenital anomalies",verification:"Verified",notes:"Expands the clinical phenotype of valproate embryopathy.",link:"https://pubmed.ncbi.nlm.nih.gov/11460259/",systems:["vision"]},
+  {id:"FVSD-0015",year:2002,title:"Ophthalmic findings in fetal anticonvulsant syndrome(s)",authors:"Glover SJ; et al.",journal:"",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Clinical study",topic:"Ophthalmic abnormalities",verification:"Needs verification",notes:"Ocular phenotype within fetal anticonvulsant syndrome; complete metadata requires verification.",link:"https://doi.org/10.1016/S0161-6420(02)00959-4",systems:["vision"]},
+  {id:"FVSD-0016",year:2005,title:"Characteristics of fetal anticonvulsant syndrome associated autistic disorder",authors:"Rasalam AD; et al.",journal:"Developmental Medicine & Child Neurology",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Clinical cohort",topic:"Autism; language; social communication",verification:"Needs verification",notes:"Important study of autistic disorder associated with fetal anticonvulsant exposure.",link:"https://pubmed.ncbi.nlm.nih.gov/16108456/",systems:["brain"]},
+  {id:"FVSD-0017",year:2006,title:"Fetal valproate syndrome",authors:"Kulkarni ML; Zaheeruddin M; Shenoy N; Vani HN",journal:"Indian Journal of Pediatrics",pubType:"Case Report",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Case report",topic:"Dysmorphism; congenital anomalies; CNS dysfunction",verification:"Verified",notes:"Reports a child with typical fetal valproate syndrome features.",link:"https://pubmed.ncbi.nlm.nih.gov/17090909/",systems:["craniofacial", "brain"]},
+  {id:"FVSD-0018",year:2009,title:"Valproic acid in pregnancy: how much are we endangering the unborn child?",authors:"Ornoy A",journal:"Reproductive Toxicology",pubType:"Review",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Narrative review",topic:"Teratogenicity; mechanisms; congenital anomalies",verification:"Needs verification",notes:"Major review of valproate teratogenic risk and embryopathy.",link:"https://doi.org/10.1016/j.reprotox.2009.02.014",systems:["other"]},
+  {id:"FVSD-0019",year:2014,title:"Ocular coloboma and foetal valproate syndrome",authors:"Jackson A; et al.",journal:"Molecular and Cellular Pediatrics",pubType:"Case Report",tier:"Tier 2 - Valproate embryopathy",studyDesign:"Case report",topic:"Ocular coloboma",verification:"Needs verification",notes:"Expands ocular phenotype associated with fetal valproate syndrome.",link:"https://pubmed.ncbi.nlm.nih.gov/24584103/",systems:["vision"]},
+  {id:"FVSD-0020",year:2017,title:"Fetal Valproate Syndrome",authors:"Mutlu-Albayrak H; et al.",journal:"Pediatrics and Neonatology",pubType:"Review/Case Report",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Clinical review/case report",topic:"Phenotype; congenital anomalies; developmental effects",verification:"Needs verification",notes:"Modern clinical review of fetal valproate syndrome.",link:"https://doi.org/10.1016/j.pedneo.2016.01.009",systems:["craniofacial", "brain"]},
+  {id:"FVSD-0021",year:2017,title:"Fetal Valproate Syndrome – Still a Problem Today",authors:"Wiedemann K; et al.",journal:"",pubType:"Review",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Review",topic:"Clinical phenotype; ongoing clinical relevance",verification:"Needs verification",notes:"Modern review emphasizing continued relevance of FVS.",link:"https://pubmed.ncbi.nlm.nih.gov/29073690/",systems:["other"]},
+  {id:"FVSD-0022",year:2018,title:"Irish cohort study",authors:"Mohd Yunos H; Green A",journal:"Irish Journal of Medical Science",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Cohort study",topic:"Neurodevelopment; congenital anomalies",verification:"Needs verification",notes:"User-supplied Irish cohort record; exact title and bibliographic metadata require verification.",link:"https://doi.org/10.1007/s11845-018-1757-6",systems:["brain", "other"]},
+  {id:"FVSD-0023",year:2018,title:"Intellectual functioning in clinically confirmed fetal valproate syndrome",authors:"R.L. et al.",journal:"",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Clinical cohort",topic:"Intellectual disability; IQ; neurodevelopment",verification:"Needs verification",notes:"User-supplied record; author list and exact title require verification.",link:"https://doi.org/10.1016/j.ntt.2018.11.003",systems:["brain"]},
+  {id:"FVSD-0024",year:2019,title:"Diagnosis and management of individuals with Fetal Valproate Spectrum Disorder; a consensus statement from the European Reference Network for Congenital Malformations and Intellectual Disability",authors:"Clayton-Smith J; et al.",journal:"Orphanet Journal of Rare Diseases",pubType:"Consensus Statement",tier:"Tier 1 - Direct FVS/FVSD",studyDesign:"Consensus statement",topic:"Diagnosis; management; phenotype; neurodevelopment",verification:"Verified",notes:"Modern diagnostic and management framework defining FVSD as a spectrum.",link:"https://pubmed.ncbi.nlm.nih.gov/31324220/",systems:["brain", "other"]},
+  {id:"FVSD-0025",year:2021,title:"Chromatin Imbalance as the Vertex Between Fetal Valproate Syndrome and Chromatinopathies",authors:"Parodi C; et al.",journal:"Frontiers in Cell and Developmental Biology",pubType:"Review",tier:"Tier 5 - Mechanistic",studyDesign:"Mechanistic review",topic:"Epigenetics; chromatin; developmental biology",verification:"Needs verification",notes:"Mechanistic model linking FVSD to chromatin dysregulation.",link:"https://doi.org/10.3389/fcell.2021.654467",systems:["other"]},
+  {id:"FVSD-0026",year:2023,title:"Neurodevelopment in FVSD",authors:"Bluett-Duncan M; et al.",journal:"",pubType:"Research Article",tier:"Tier 3 - FVSD manifestations",studyDesign:"Clinical cohort",topic:"Neurodevelopment; lifespan outcomes",verification:"Needs verification",notes:"User-supplied Newcastle University repository record; peer-reviewed publication metadata requires verification.",link:"",systems:["brain"]},
 ];
 
+/* ---------------- DATA: web articles & resources (non-peer-reviewed, real public sources) ---------------- */
+const WEB_ARTICLES = [
+  {title:"More information about fetal valproate spectrum disorder (FVSD)", source:"Newcastle Hospitals NHS Foundation Trust", type:"Patient Guide", quality:"green", qualityLabel:"Official / clinically reviewed", summary:"NHS clinical service guide explaining common FVSD features and how to support affected individuals day to day.", url:"https://www.newcastle-hospitals.nhs.uk/services/fetal-exposure-to-medicines-service/fetal-valproate-spectrum-disorder-fvsd/"},
+  {title:"Fetal Valproate Syndrome", source:"NORD (National Organization for Rare Disorders)", type:"Reference", quality:"green", qualityLabel:"Official / clinically reviewed", summary:"Rare disease reference summarising symptoms, causes, diagnosis and management, developed with the Genetic and Rare Diseases Information Center.", url:"https://rarediseases.org/rare-diseases/fetal-valproate-syndrome/"},
+  {title:"New valproate prescriptions must be signed off by two specialist doctors from January 2024, says MHRA", source:"The Pharmaceutical Journal", type:"Regulatory News", quality:"green", qualityLabel:"Official / clinically reviewed", summary:"Coverage of the MHRA's 2024 rule requiring specialist sign-off for new valproate prescriptions to reduce fetal exposure.", url:"https://pharmaceutical-journal.com/article/news/new-valproate-prescriptions-must-be-signed-off-by-two-specialist-doctors-from-january-2024-says-mhra"},
+  {title:"Men taking valproate advised by MHRA to use effective contraception", source:"The Pharmaceutical Journal", type:"Regulatory News", quality:"green", qualityLabel:"Official / clinically reviewed", summary:"Reports MHRA advice following a study linking paternal valproate use to increased neurodevelopmental risk in children.", url:"https://pharmaceutical-journal.com/article/news/men-taking-valproate-advised-by-mhra-to-use-effective-contraception"},
+  {title:"MHRA: Prepare Now to Reduce Valproate Harm", source:"Medscape", type:"Medical News", quality:"yellow", qualityLabel:"Reputable news / advocacy", summary:"Summarises MHRA prescribing data trends and charity commentary on remaining risk of in-utero valproate exposure.", url:"https://www.medscape.com/viewarticle/mhra-prepare-now-reduce-valproate-harm-2023a1000u0w"},
+  {title:"MHRA bans valproate without pregnancy prevention programme", source:"PharmaTimes", type:"Regulatory News", quality:"yellow", qualityLabel:"Reputable news / advocacy", summary:"Trade press report on the licence change restricting valproate use in women of childbearing age outside the PPP.", url:"https://pharmatimes.com/news/mhra_bans_valproate_without_pregnancy_prevention_programme_1233022/"},
+  {title:"News & research updates", source:"FACS New Zealand (Foetal Anti-Convulsant Syndrome NZ)", type:"Patient Advocacy", quality:"yellow", qualityLabel:"Reputable news / advocacy", summary:"Patient advocacy group news page, including recruitment for University of Manchester research on FVSD/FVS outcomes.", url:"https://www.facsnz.com/news"},
+  {title:"Fetal valproate spectrum disorder", source:"Wikipedia", type:"Encyclopedia", quality:"red", qualityLabel:"Unreviewed / user-generated", summary:"Community-edited overview of symptoms, causes and prevalence — useful starting point, but not clinically reviewed.", url:"https://en.wikipedia.org/wiki/Fetal_valproate_spectrum_disorder"},
+];
 
-
+/* Quality traffic light for research papers: combines verification status with
+   how rigorous the underlying study design is (consensus/cohort/review > case series > single case report). */
+function computePaperQuality(p){
+  const designScore = {
+    "Consensus statement":3,
+    "Narrative review":2, "Mechanistic review":2, "Clinical review/case report":2, "Review":2,
+    "Clinical cohort":2, "Cohort study":2, "Clinical case series":2, "Case series":2,
+    "Phenotype verification/clinical series":2, "Clinical genetics case series/review":2,
+    "Clinical study":1, "Observational":1, "Case report":1, "Case report/letter":1,
+    "Case report/clinical report":1, "Sibling case report":1,
+  }[p.studyDesign] ?? 1;
+  const verified = p.verification === "Verified";
+  if(designScore>=2 && verified) return {level:"green", label:"Strong evidence, verified"};
+  if(designScore>=2 || verified) return {level:"yellow", label:"Moderate confidence"};
+  return {level:"red", label:"Preliminary / unverified"};
+}
 
 const systems = [
   {id:'brain', name:'Brain & Neurodevelopment', hex:'#6e5bc6', icon:'🧠', view:'front', pos:{x:150,y:55}},
@@ -504,16 +631,19 @@ function renderDetail(){
 
   const paperListHtml = filtered.length ? `
     <div class="paper-list">
-      ${filtered.map(p=>`
+      ${filtered.map(p=>{
+        const q = computePaperQuality(p);
+        return `
         <div class="paper">
           <button class="bookmark" onclick="toggleSave(this)">🔖</button>
           <h4>${p.title}</h4>
           <div class="meta">${p.authors || 'Author list unverified'}${p.journal? ' · '+p.journal:''}</div>
+          <div style="margin-bottom:8px;"><span class="quality ${q.level}"><span class="dot"></span>${q.label}</span></div>
           <div class="foot">
-            <span class="tagline">${p.year} &nbsp;|&nbsp; ${p.studyDesign}</span>
+            <span class="tagline">${p.year} &nbsp;|&nbsp; ${p.studyDesign}${p.verification==='Needs verification' ? ' &nbsp;|&nbsp; <span style="color:#c07a2b">⚠ needs verification</span>' : ''}</span>
             ${p.link ? `<a class="view-link" href="${p.link}" target="_blank" rel="noopener">View paper ↗</a>` : `<span class="view-link" style="opacity:.5">No link on file</span>`}
           </div>
-        </div>`).join('')}
+        </div>`;}).join('')}
     </div>
   ` : `
     <div style="padding:30px 18px;text-align:center;color:var(--muted);font-size:13px;">
@@ -540,6 +670,24 @@ function renderDetail(){
     ${paperListHtml}
   `;
 }
+/* ---------------- RENDER: web articles & resources ---------------- */
+function renderArticles(){
+  const grid = document.getElementById('articlesGrid');
+  grid.innerHTML = WEB_ARTICLES.map(a => `
+    <div class="article-card">
+      <div class="atype">${a.type}</div>
+      <h4>${a.title}</h4>
+      <div class="asource">${a.source}</div>
+      <div class="asummary">${a.summary}</div>
+      <div><span class="quality ${a.quality}"><span class="dot"></span>${a.qualityLabel}</span></div>
+      <div class="afoot">
+        <span></span>
+        <a class="view-link" href="${a.url}" target="_blank" rel="noopener">Read article ↗</a>
+      </div>
+    </div>
+  `).join('');
+}
+
 function collapseDetail(){ document.getElementById('detailCard').style.display='none'; }
 function toggleSave(btn){
   btn.classList.toggle('active');
@@ -577,7 +725,7 @@ function renderDonut(){
 
 function renderBar(){
   const svg = document.getElementById('barSvg');
-  const startYear = 1980, endYear = 2020;
+  const startYear = 1980, endYear = 2025;
   const counts = {};
   PAPERS.forEach(p=>{ counts[p.year] = (counts[p.year]||0)+1; });
   const data = [];
@@ -598,7 +746,7 @@ function renderBar(){
     return `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#eef0fa" stroke-width="1"></line>
             <text x="0" y="${y-2}" font-size="8" fill="#a3a8bd">${v}</text>`;
   }).join('');
-  const labelYears = [1980,1990,2000,2010,2020];
+  const labelYears = [1980,1990,2000,2010,2020,2025];
   const labelsSvg = labelYears.map(ly=>{
     const idx = ly-startYear;
     const x = idx*(w/data.length);
@@ -647,6 +795,7 @@ populateFilters();
 renderAll();
 renderDonut();
 renderBar();
+renderArticles();
 </script>
 </body>
 </html>
